@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NEON|PARTS — Terms & Conditions</title>
+<style>
+  :root{
+    --bg:#0a0f18; --text:#e5e7eb; --muted:#9aa4b2;
+    --accent:#ff6a00; --pink:#ff2dcf; --border:#1b2336;
+    --glow:0 0 18px rgba(255,106,0,.5),0 0 2px rgba(255,106,0,.9);
+  }
+
+  @keyframes flicker{0%,100%{opacity:1} 92%{opacity:.8} 95%{opacity:.5} 97%{opacity:.9}}
+  @keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
+  @keyframes rain{0%{background-position:0 -100vh}100%{background-position:0 100vh}}
+  @keyframes glitchShift{0%{clip-path:inset(0 0 0 0)}20%{clip-path:inset(10% 0 0 0)}40%{clip-path:inset(0 0 15% 0)}60%{clip-path:inset(20% 0 0 0)}80%{clip-path:inset(0 0 25% 0)}100%{clip-path:inset(0 0 0 0)}}
+
+  body{
+    margin:0; padding:40px; line-height:1.65;
+    font-family:Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+    color:var(--text);
+    background:
+      radial-gradient(900px 480px at 70% -10%, rgba(255,106,0,.12), transparent 60%),
+      radial-gradient(900px 480px at 0% 100%, rgba(255,45,207,.10), transparent 60%),
+      var(--bg);
+    overflow-x:hidden;
+    outline:none;
+  }
+  a{color:var(--accent); text-decoration:none}
+
+  .scanlines{pointer-events:none; position:fixed; inset:0; mix-blend-mode:overlay; opacity:.25; background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.08), rgba(255,255,255,.08) 1px, transparent 1px, transparent 3px);}
+  .sweep{pointer-events:none; position:fixed; inset:0; background:linear-gradient(180deg, rgba(255,45,207,.12), transparent); mix-blend-mode:screen; animation:scan 3.5s linear infinite;}
+  .rain{pointer-events:none; position:fixed; inset:0; background:repeating-linear-gradient(195deg, rgba(255,106,0,.18) 0 1px, transparent 1px 3px); opacity:.15; animation:rain 1.2s linear infinite;}
+
+  .panel{
+    background:linear-gradient(180deg, rgba(12,17,27,.9), rgba(12,17,27,.75));
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 20px;
+    margin:16px 0;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+
+  h1{font-family:Orbitron, sans-serif; font-size:34px; margin:0 0 16px}
+  h2{font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:18px 0 8px; letter-spacing:1px}
+
+  .glitch{position:relative; color:var(--accent); text-shadow:var(--glow); letter-spacing:2px}
+  .glitch::before,.glitch::after{content:attr(data-text); position:absolute; left:0; top:0; width:100%;}
+  .glitch::before{left:2px; text-shadow:-2px 0 var(--pink); animation:glitchShift 2s infinite linear alternate}
+  .glitch::after{left:-2px; text-shadow:2px 0 var(--accent); animation:glitchShift 1.6s infinite linear reverse}
+
+  .secret{color:var(--pink); font-size:12px; opacity:0; transition:.4s}
+  .secret:hover{opacity:1}
+
+  #easter-msg{
+    opacity:0;
+    transform:translateY(30px);
+    transition:all .6s ease;
+    margin-top:20px;
+    padding:12px 16px;
+    border:1px solid var(--pink);
+    border-radius:8px;
+    max-width:460px;
+    background:rgba(255,45,207,.08);
+  }
+  #easter-msg.show{opacity:1; transform:translateY(0)}
+
+  footer{margin-top:16px; color:var(--muted); font-size:12px; animation:flicker 6s infinite}
+
+  /* Tiny debug dot (turns green when keys are heard) */
+  #dbg{position:fixed; right:10px; bottom:10px; width:10px; height:10px; border-radius:50%; background:#7f1d1d; border:1px solid #300;}
+  #dbg.ok{background:#16a34a; border-color:#0a3;}
+</style>
+</head>
+
+<body tabindex="0">
+  <div class="scanlines"></div>
+  <div class="sweep"></div>
+  <div class="rain"></div>
+  <div id="dbg" title="keyboard listener status"></div>
+
+  <h1 class="glitch" data-text="Terms & Conditions">Terms & Conditions</h1>
+  <div class="panel">Legal Notice: This is parody. Any resemblance to megacorps living or defunct is purely coincidental (their lawyers aren’t).</div>
+
+  <p><a href="index.html">⟵ Back to Store</a></p>
+
+  <h2>1. Warranty (?)</h2>
+  <p>All parts come with a <strong>complimentary 90-minute warranty</strong>, excluding Tuesdays, holidays, or whenever our legal team remembers.</p>
+
+  <h2>2. Side Effects</h2>
+  <p>May include involuntary techno dancing, glowing fingernails, sentient limbs, or hearing corporate jingles during meditation.</p>
+
+  <h2>3. Data Collection</h2>
+  <p>We collect <em>post-personal</em> data such as dream metrics and thought-based shopping intent.</p>
+
+  <h2>4. Returns</h2>
+  <p>Returns accepted only if causality remains intact. If your neural implant becomes self-aware, it gets custody.</p>
+
+  <h2>5. Fine Print</h2>
+  <p>The fine print is microscopic. Zoom in. Closer. <span class="secret">You found an easter egg. Nice.</span></p>
+
+  <h2>6. Konami Clause</h2>
+  <p>Entering ↑ ↑ ↓ ↓ ← → ← → B A will reveal a hidden message (click once on the page first if it doesn’t respond):</p>
+  <div id="easter-msg">You unlocked: <strong>“Digital Mega-Shrug”</strong>. Nothing happens. The lawyers insisted.</div>
+
+  <!-- Fallback clickable unlock if keyboards are blocked -->
+  <p style="margin-top:14px"><button id="fallback" class="panel" style="cursor:pointer;background:rgba(255,106,0,.1)">Can’t type? Click to unlock.</button></p>
+
+  <footer>NEON|PARTS © 2077 — All absurdities reserved.</footer>
+
+  <script>
+    (function(){
+      const dbg = document.getElementById('dbg');
+      const msg = document.getElementById('easter-msg');
+      const fallbackBtn = document.getElementById('fallback');
+
+      // Normalize incoming key value to our canonical tokens
+      const norm = (k) => {
+        if (!k) return '';
+        const lower = k.toLowerCase();
+        if (lower === 'arrowup' || k === 'Up') return 'up';
+        if (lower === 'arrowdown' || k === 'Down') return 'down';
+        if (lower === 'arrowleft' || k === 'Left') return 'left';
+        if (lower === 'arrowright' || k === 'Right') return 'right';
+        if (lower === 'b') return 'b';
+        if (lower === 'a') return 'a';
+        return ''; // ignore other keys
+      };
+
+      const targetSeq = ['up','up','down','down','left','right','left','right','b','a'];
+      let buffer = [];
+
+      const onKey = (e) => {
+        dbg.classList.add('ok');       // show we heard a key
+        setTimeout(()=>dbg.classList.remove('ok'), 120);
+
+        // ensure page can receive future keys
+        if (document.activeElement !== document.body) document.body.focus({preventScroll:true});
+
+        const token = norm(e.key || e.code);
+        if (!token) return;            // ignore unrecognized keys
+        buffer.push(token);
+        if (buffer.length > targetSeq.length) buffer.shift();
+
+        // check match
+        for (let i = 0; i < buffer.length; i++) {
+          if (buffer[i] !== targetSeq[i - (targetSeq.length - buffer.length)]) {
+            // partial mismatch when over length; simpler: compare joined slice
+            // fallback to full-string comparison
+          }
+        }
+        if (buffer.join(',') === targetSeq.join(',')) {
+          msg.classList.add('show');
+          buffer = [];
+        }
+      };
+
+      // Multiple listeners to be safe across browsers/embeds
+      window.addEventListener('keydown', onKey, {passive:true});
+      document.addEventListener('keydown', onKey, {passive:true});
+      document.body.addEventListener('keydown', onKey, {passive:true});
+
+      // Ensure focus after any pointer/key interaction
+      const ensureFocus = () => document.body.focus({preventScroll:true});
+      window.addEventListener('load', ensureFocus);
+      window.addEventListener('click', ensureFocus);
+      window.addEventListener('keypress', ensureFocus);
+      document.body.setAttribute('tabindex','0');
+
+      // Fallback click unlock
+      fallbackBtn.addEventListener('click', () => msg.classList.add('show'));
+    })();
+  </script>
+</body>
+</html>

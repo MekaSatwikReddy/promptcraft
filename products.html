@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NEON|PARTS — All Products</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0f18; --text:#e5e7eb; --muted:#9aa4b2;
+    --accent:#ff6a00; --accent2:#ff2dcf; --border:#1b2336;
+  }
+  body{margin:0;background:radial-gradient(900px 480px at 70% -10%, rgba(255,106,0,.12), transparent 60%), radial-gradient(900px 480px at 0% 100%, rgba(255,45,207,.10), transparent 60%), var(--bg); color:var(--text); font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px;}
+  a{color:var(--accent);text-decoration:none}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+  h1{font-family:Orbitron,Inter,sans-serif;color:var(--accent);text-shadow:0 0 18px rgba(255,106,0,.45);letter-spacing:1px;margin:0}
+  .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:18px}
+  .card{background:rgba(12,17,27,.82);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  .media{position:relative;aspect-ratio:16/10;overflow:hidden}
+  .media img{width:100%;height:100%;object-fit:cover;filter:saturate(1.15)}
+  .content{padding:16px;display:grid;gap:8px}
+  .title{font-weight:800}
+  .price{font-family:Orbitron,Inter,sans-serif;color:var(--accent);font-weight:800}
+  .desc{color:var(--muted)}
+  .back{margin-top:8px;display:inline-block}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>All Products</h1>
+      <span style="margin-left:auto"><a class="back" href="index.html">⟵ Back to Store</a></span>
+    </header>
+
+    <section class="grid" aria-label="Product catalog">
+      <!-- Chroma' Eyes -->
+      <article class="card">
+        <div class="media">
+          <img src="chroma-eyes.png" alt="Chroma’ Eyes Optics Suite">
+        </div>
+        <div class="content">
+          <div class="title">“Chroma’ Eyes” Optics Suite</div>
+          <div class="price">48,000 Crypto-Credits</div>
+          <p class="desc">10× zoom, thermal vision, and a built-in social feed. Never miss a moment.</p>
+        </div>
+      </article>
+
+      <!-- Titan Armature -->
+      <article class="card">
+        <div class="media">
+          <img src="titan-armature.png" alt="Titan Armature">
+        </div>
+        <div class="content">
+          <div class="title">“Titan” Armature</div>
+          <div class="price">92,500 Crypto-Credits</div>
+          <p class="desc">500% strength, diamond knuckles, and a built-in espresso machine. Boardroom-ready.</p>
+        </div>
+      </article>
+
+      <!-- Recall Neural Implant -->
+      <article class="card">
+        <div class="media">
+          <img src="recall-implant.png" alt="Recall Neural Implant">
+        </div>
+        <div class="content">
+          <div class="title">“Recall” Neural Implant</div>
+          <div class="price">68,300 Crypto-Credits</div>
+          <p class="desc">Perfect, eidetic memory. Download new skills in seconds.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

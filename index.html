@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="en" data-theme="orange">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON|PARTS — Cybernetic Upgrades</title>
+
+  <!-- SEO & Social (unchanged) -->
+  <meta name="description" content="NEON|PARTS — a slick, dystopian-cyberpunk parody store for fictional cybernetic upgrades. Minimal dark mode, neon orange/pink accents, hologram glitches, and questionable warranties." />
+  <meta name="theme-color" content="#ff6a00" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="NEON|PARTS — Cybernetic Upgrades" />
+  <meta property="og:description" content="Premium cybernetic enhancements. Minimal design. Maximum overkill." />
+  <meta property="og:image" content="chroma-eyes.png" />
+  <meta property="og:image:alt" content="Neon promo image for cybernetic optics" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NEON|PARTS — Cybernetic Upgrades" />
+  <meta name="twitter:description" content="Premium cybernetic enhancements. Minimal design. Maximum overkill." />
+  <meta name="twitter:image" content="chroma-eyes.png" />
+  <link rel="icon" href="chroma-eyes.png" />
+
+  <!-- Fonts (swap) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@600;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg: #05070b;
+      --panel: #0c111b;
+      --text: #cdd6f4;
+      --muted: #94a3b8;
+      --accent: #ff6a00;        /* neon orange (default) */
+      --accent-pink: #ff2dcf;   /* neon pink  */
+      --accent-2: var(--accent-pink);
+      --border: #1b2336;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --glow: 0 0 18px rgba(255,106,0,.45), 0 0 2px rgba(255,106,0,.7);
+      --radius: 16px;
+      --focus:  #f59e0b;
+      --glitch-factor: 1;       /* 0..2, user adjustable */
+      --rain-opacity: .15;      /* toggled */
+      --fog-opacity: .10;       /* toggled */
+      --toast-y: -140%;
+    }
+    /* Theme switch (pink) */
+    html[data-theme="pink"] {
+      --accent: var(--accent-pink);
+      --glow: 0 0 18px rgba(255,45,207,.45), 0 0 2px rgba(255,45,207,.7);
+      --focus: #ec4899;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 70% -10%, rgba(255,106,0,.12), transparent 60%),
+        radial-gradient(1100px 500px at 0% 100%, rgba(255,45,207,.10), transparent 60%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:focus-visible, button:focus-visible, .btn:focus-visible, input:focus-visible {
+      outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 12px;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 72px; }
+    .section { margin-top: 64px; }
+
+    /* Scroll progress bar */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px var(--accent);
+      z-index: 9999;
+    }
+
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px);
+      background: rgba(5,7,11,0.55); border-bottom: 1px solid var(--border); }
+    .bar { max-width: 1200px; margin: 0 auto; padding: 14px 20px; display: flex; align-items:center; gap: 12px; }
+    .logo { font-family: Orbitron, sans-serif; font-weight: 800; letter-spacing: 2px; }
+    .logo a { color: var(--text); } .logo b { color: var(--accent); text-shadow: var(--glow); }
+    nav[aria-label="Main"] { margin-left: auto; display: flex; gap: 14px; flex-wrap: wrap; }
+    nav a { color: var(--muted); padding: 8px 12px; font-weight: 600; border-radius: 999px; }
+    nav a:hover { color: var(--accent); }
+
+    .promo { background: linear-gradient(90deg, rgba(255,106,0,.1), rgba(255,45,207,.1));
+      border-bottom: 1px solid var(--border); text-align: center; font-weight: 700; padding: 10px 14px; }
+
+    .hero { margin-top: 28px; background: linear-gradient(180deg, rgba(15,21,36,.85), rgba(15,21,36,.55));
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; position: relative; }
+    .hero-inner { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; padding: 28px; }
+    @media(max-width:900px){ .hero-inner{ grid-template-columns:1fr; } }
+
+    h1 { font-family: Orbitron, sans-serif; font-size: clamp(28px,4vw,44px);
+      color: var(--accent); text-shadow: var(--glow); margin: 0 0 8px 0; }
+    .sub { color: var(--muted); margin: 0; }
+
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    .btn {
+      display: inline-flex; align-items:center; justify-content:center;
+      padding: 14px 20px; line-height: 1.3;
+      border: 1px solid var(--border); border-radius: 12px; color: var(--text);
+      font-weight: 800; transition: .2s; background: rgba(20,25,40,.5);
+      position: relative; overflow: hidden;
+    }
+    .btn:hover { border-color: var(--accent); box-shadow: var(--glow); transform: translateY(-2px); }
+    .btn.primary { background: rgba(255,106,0,.15); border-color: rgba(255,106,0,.4); }
+    .btn span.holo-glitch-text { display: inline-block; padding-bottom: 2px; }
+
+    .grid { margin-top: 36px; display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+    .card { background: rgba(12,17,27,.8); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; transition: .2s; position: relative; }
+    .card:hover { border-color: var(--accent); box-shadow: var(--glow), var(--shadow); transform: translateY(-4px); }
+    .media { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+    .media img { width:100%; height:100%; object-fit:cover; filter:saturate(calc(1.1 + .05*var(--glitch-factor))); }
+
+    .content { padding:18px; display:grid; gap:10px; }
+    .title { font-weight:800; font-size:18px; }
+    .price { font-family:Orbitron,sans-serif; color:var(--accent); text-shadow: var(--glow); font-weight:800; }
+    .desc { color: var(--muted); }
+    .specs { padding-left:18px; color:#a3b2d3; } .specs li { margin: 6px 0; }
+
+    .card::before { content:"HOLO VERIFIED"; position:absolute; top:8px; right:-6px; font-family:Orbitron,sans-serif; font-size:10px;
+      padding:4px 8px; background:linear-gradient(90deg, rgba(255,106,0,.4), rgba(255,45,207,.4));
+      border:1px solid rgba(255,106,0,.4); border-radius:6px; transform:skewX(-12deg);
+      text-shadow:0 0 6px rgba(255,106,0,.6); animation:holoFlicker calc(4s/var(--glitch-factor)) infinite steps(25);
+      pointer-events:none; }
+
+    .badges { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:18px; }
+    .badge { display:flex; align-items:center; gap:10px; border:1px dashed var(--border); border-radius:12px; padding:10px 12px; color: var(--muted); background: rgba(20,25,40,.4); }
+    .dot { width:10px; height:10px; border-radius:50%; background: var(--accent); box-shadow: var(--glow); }
+
+    .features { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+    .feature { background: linear-gradient(180deg, rgba(12,17,27,.9), rgba(12,17,27,.72)); border:1px solid var(--border); border-radius:16px; padding:18px; }
+    .feature h3 { margin:0 0 6px 0; color: var(--accent); text-shadow: var(--glow); font-family: Orbitron, sans-serif; }
+
+    .marquee-wrap { overflow:hidden; border:1px solid var(--border); border-radius:12px; background: rgba(12,17,27,.6); }
+    .marquee { display:flex; gap:30px; padding:10px 0; animation: scrollx 18s linear infinite; white-space: nowrap; }
+    .marquee span { color:#c9a4ff; opacity:.85 } @keyframes scrollx { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .table { width:100%; border-collapse: collapse; overflow:hidden; border-radius:16px; border:1px solid var(--border); }
+    .table th, .table td { padding:12px 14px; border-bottom:1px solid var(--border); }
+    .table th { background: rgba(255,106,0,.08); text-align:left; font-family:Orbitron; }
+    .table tr:nth-child(even) td { background: rgba(12,17,27,.5); }
+    .pill { display:inline-block; padding:4px 8px; border:1px solid var(--border); border-radius:999px; color:var(--muted); }
+
+    details { border:1px solid var(--border); border-radius:12px; padding:12px 14px; background: rgba(12,17,27,.6); }
+    details + details { margin-top:10px; }
+    summary { cursor:pointer; color: var(--accent); font-weight: 700; }
+
+    .nl { display:grid; grid-template-columns: 1.2fr .8fr; gap:18px; border:1px solid var(--border); border-radius:16px; padding:18px; background: linear-gradient(180deg, rgba(12,17,27,.9), rgba(12,17,27,.7)); }
+    .nl form { display:flex; gap:10px; flex-wrap:wrap; }
+    .nl input[type="email"] { flex:1; min-width:260px; background:#0a0f18; border:1px solid var(--border); border-radius:10px; padding:12px; color: var(--text); }
+    .nl button { background: rgba(255,106,0,.15); color: var(--text); border:1px solid rgba(255,106,0,.4); border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer; }
+    .nl button:hover { box-shadow: var(--glow); transform: translateY(-1px); }
+
+    .sr { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+    .panel { background: linear-gradient(180deg, rgba(12,17,27,.9), rgba(12,17,27,.72)); border:1px solid var(--border); border-radius:16px; padding:18px; }
+
+    .cta-wide { display:grid; grid-template-columns: 1fr auto; gap:16px; align-items:center; padding:18px; border:1px solid var(--border); border-radius:16px; background: linear-gradient(90deg, rgba(255,106,0,.08), rgba(255,45,207,.08)); }
+    @media(max-width:700px){ .cta-wide{ grid-template-columns: 1fr; } }
+
+    footer { margin-top: 64px; border-top: 1px solid var(--border); padding-top: 22px; color: var(--muted); }
+    .fgrid { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+    footer a { color: var(--muted); } footer a:hover { color: var(--accent); }
+    .tiny { font-size: 12px; opacity: .8; margin-top: 10px; }
+
+    /* Holo & glitch */
+    @keyframes holoFlicker { 0%,100%{opacity:1} 95%{opacity:calc(.5 * var(--glitch-factor))} 97%{opacity:.92} }
+    @keyframes scanSweep { 0%{transform:translateY(-100%)} 100%{transform:translateY(200%)} }
+    .holo-glitch-text { position: relative; }
+    .holo-glitch-text::before, .holo-glitch-text::after {
+      content: attr(data-text); position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(.6 * var(--glitch-factor));
+    }
+    .holo-glitch-text::before { left: 1px; top: 0; color: var(--accent-2); }
+    .holo-glitch-text::after  { left: -1px; top: 0; color: var(--accent); }
+    .holo-flicker { animation: holoFlicker calc(5s/var(--glitch-factor)) infinite steps(30); }
+    .holo-scan::after { content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,45,207,.16), transparent 55%); mix-blend-mode: screen;
+      animation: scanSweep calc(3.2s/var(--glitch-factor)) infinite linear; pointer-events:none; }
+
+    @keyframes glitchBurst {
+      0%{ transform: translate(0,0); clip-path: inset(0 0 0 0); }
+      15%{ transform: translate(1px,-1px); clip-path: inset(8% 0 0 0); }
+      30%{ transform: translate(-2px,1px); clip-path: inset(0 0 14% 0); }
+      45%{ transform: translate(2px,0); clip-path: inset(18% 0 0 0); }
+      60%{ transform: translate(-1px,1px); clip-path: inset(0 0 22% 0); }
+      100%{ transform: translate(0,0); clip-path: inset(0 0 0 0); }
+    }
+    .glitch-burst { animation: glitchBurst 420ms steps(12) 1; }
+
+    .btn.holo { box-shadow: var(--glow); }
+    .btn.holo::after { content:""; position:absolute; inset: -30% -10%;
+      background: linear-gradient(180deg, rgba(255,45,207,.22), transparent 65%);
+      mix-blend-mode: screen; animation: scanSweep calc(2.8s/var(--glitch-factor)) linear infinite; pointer-events: none; }
+
+    /* Compare tray */
+    .compare-picker { display:flex; gap: 8px; align-items:center; margin-top: 6px; color: var(--muted); font-size: 13px; }
+    #compareTray {
+      position: fixed; left: 0; right: 0; bottom: 0; transform: translateY(110%);
+      background: rgba(12,17,27,.96); border-top: 1px solid var(--border); box-shadow: 0 -10px 30px rgba(0,0,0,.5);
+      padding: 10px 16px; z-index: 60; transition: transform .25s ease;
+    }
+    #compareTray.show { transform: translateY(0%); }
+    #compareTable { width:100%; border-collapse: collapse; }
+    #compareTable th, #compareTable td { border-bottom: 1px solid var(--border); padding: 8px; text-align: left; }
+
+    /* Cart drawer */
+    #cart {
+      position: fixed; top:0; right:0; bottom:0; width: min(420px, 95vw);
+      background: rgba(12,17,27,.98); border-left: 1px solid var(--border);
+      transform: translateX(110%); transition: transform .25s ease; z-index: 70;
+      display:flex; flex-direction:column;
+    }
+    #cart.show { transform: translateX(0%); }
+    #cart header { position: sticky; top:0; background: rgba(12,17,27,.98); padding: 14px; border-bottom:1px solid var(--border); }
+    #cart .items { padding: 12px; overflow:auto; flex:1; }
+    #cart .item { display:flex; gap:10px; align-items:center; border-bottom:1px solid var(--border); padding:10px 0; }
+    #cart footer { padding: 12px; border-top:1px solid var(--border); display:grid; gap:8px; }
+
+    /* Toasts */
+    #toast {
+      position: fixed; right: 16px; top: 16px; transform: translateY(var(--toast-y));
+      transition: transform .25s ease; z-index: 80;
+      background: rgba(20,25,40,.9); border:1px solid var(--border); border-radius: 12px; padding: 10px 14px; box-shadow: var(--shadow);
+    }
+    #toast.show { --toast-y: 0%; }
+
+    /* Command palette */
+    #cmd {
+      position: fixed; inset: 0; display:none; place-items:center; z-index: 90; backdrop-filter: blur(6px);
+      background: rgba(5,7,11,.55);
+    }
+    #cmd .box { width:min(680px, 94vw); background: rgba(12,17,27,.98); border:1px solid var(--border); border-radius:16px; padding: 14px; box-shadow: var(--shadow); }
+    #cmd input { width:100%; padding:12px; background:#0a0f18; border:1px solid var(--border); border-radius:10px; color:var(--text); }
+    #cmd ul { list-style:none; padding: 10px 0 0; margin:0; max-height: 280px; overflow:auto; }
+    #cmd li { padding: 8px 8px; border-radius: 10px; display:flex; justify-content:space-between; align-items:center; }
+    #cmd li:hover, #cmd li:focus { background:#0f1729; }
+
+    /* Configurator modal */
+    #config {
+      position: fixed; inset:0; display:none; place-items:center; z-index: 85; backdrop-filter: blur(6px); background: rgba(5,7,11,.55);
+    }
+    #config .box { width:min(760px, 95vw); background: rgba(12,17,27,.98); border:1px solid var(--border); border-radius:16px; padding: 16px; }
+    .cfg-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cfg-row { background:#0b1220; border:1px solid var(--border); border-radius:10px; padding:10px; }
+    .cfg-row h4 { margin:0 0 6px 0; color:var(--accent); font-family:Orbitron; }
+    .cfg-actions { display:flex; gap:10px; justify-content:flex-end; margin-top: 10px; }
+
+    /* Settings panel */
+    #settings { position: fixed; right: 16px; bottom: 80px; z-index: 55; }
+    #settings .panel { background: rgba(12,17,27,.96); border:1px solid var(--border); border-radius: 12px; padding: 10px; display:none; width: 260px; }
+    #settings .cog { display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius: 12px; border:1px solid var(--border); background:#0b1220; cursor:pointer; }
+    #settings label { font-size:13px; color:var(--muted); display:block; margin: 8px 0 4px; }
+    #settings input[type="range"] { width:100%; }
+
+    /* Achievements */
+    #badges { display:flex; gap:8px; flex-wrap: wrap; margin-top: 8px; }
+    .badge-chip { border:1px solid var(--border); border-radius: 999px; padding:4px 8px; font-size:12px; opacity:.7; }
+    .badge-chip.unlocked { color:#16a34a; border-color:#14532d; background: rgba(22,163,74,.08); opacity:1; }
+
+    /* Mini checkout modal */
+    #checkout { position: fixed; inset:0; display:none; place-items:center; z-index:95; backdrop-filter: blur(6px); background: rgba(5,7,11,.55); }
+    #checkout .box { width:min(560px, 95vw); background: rgba(12,17,27,.98); border:1px solid var(--border); border-radius:16px; padding: 16px; }
+    #checkout form { display:grid; gap:10px; }
+    #checkout input { background:#0a0f18; border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); }
+
+    /* Overlays (rain/fog) */
+    .rain { pointer-events:none; position:fixed; inset:0; background:repeating-linear-gradient(195deg, rgba(255,106,0,var(--rain-opacity)) 0 1px, transparent 1px 3px); animation: rain 1.2s linear infinite; opacity: var(--rain-opacity); z-index: 5; display:none;}
+    @keyframes rain { 0%{background-position:0 -100vh} 100%{background-position:0 100vh} }
+    .fog { pointer-events:none; position:fixed; inset:0; background: radial-gradient(60vw 40vh at 20% 80%, rgba(255,255,255,.06), transparent), radial-gradient(70vw 50vh at 100% 0%, rgba(255,255,255,.05), transparent); filter: blur(2px); opacity: var(--fog-opacity); z-index: 4; display:none;}
+
+    /* Print target (only print chosen card) */
+    @media print {
+      header, .promo, .section, footer, #cart, #compareTray, #cmd, #config, #settings, #toast { display:none !important; }
+      .print-only { display:block !important; }
+      .print-target { display:block !important; border:none; box-shadow:none; }
+    }
+
+    /* Accessibility / motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      .holo-scan::after, .rain, .fog { display:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="progress" aria-hidden="true"></div>
+
+  <!-- Optional atmosphere overlays toggled by settings -->
+  <div class="rain" id="rain"></div>
+  <div class="fog" id="fog"></div>
+
+  <div class="promo" role="note">⚠️ NIGHT MARKET SALE: Free hologram polish with every implant. <a href="products.html">Browse deals →</a></div>
+
+  <header role="banner">
+    <div class="bar">
+      <div class="logo"><a href="#"><b>NEON</b>|PARTS</a></div>
+      <nav aria-label="Main">
+        <a href="#featured">Featured</a>
+        <a href="#compare">Compare</a>
+        <a href="#testimonials">Voices</a>
+        <a href="#faq">FAQ</a>
+        <a href="products.html">Catalog</a>
+        <a href="terms.html">Terms</a>
+      </nav>
+      <a class="btn" id="openCart" style="margin-left:auto">Cart ▸</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="main" role="main">
+    <!-- HERO -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero-inner">
+        <div>
+          <h1 class="holo-glitch-text holo-flicker" data-text="Premium Cybernetic Enhancements">
+            Premium Cybernetic Enhancements
+          </h1>
+          <p class="sub">Hand-polished dystopia, curated for the discerning post-human. Minimal design. Maximum overkill.</p>
+          <div class="cta-row" role="group" aria-label="Primary actions">
+            <a class="btn primary holo" href="products.html">
+              <span class="holo-glitch-text" data-text="Shop the Collection">Shop the Collection</span>
+            </a>
+            <a class="btn holo" href="terms.html">
+              <span class="holo-glitch-text" data-text="Read the Fine Print">Read the Fine Print</span>
+            </a>
+            <button class="btn" id="openConfigurator" type="button" title="Build your own">Configure ▸</button>
+          </div>
+
+          <div class="badges" aria-label="Trust badges">
+            <div class="badge"><span class="dot" aria-hidden="true"></span> 24-hour installation (subject to lunar tides)</div>
+            <div class="badge"><span class="dot" aria-hidden="true"></span> 256-bit dream encryption</div>
+            <div class="badge"><span class="dot" aria-hidden="true"></span> Corporate-grade espresso compliance</div>
+          </div>
+        </div>
+        <div class="media holo-scan">
+          <img src="chroma-eyes.png" alt="Neon promo optics" width="800" height="520" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="section" id="featured" aria-label="Featured Modules">
+      <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:0 0 14px 0;">Featured Modules</h2>
+      <div class="grid" role="list">
+        <!-- Card 1 -->
+        <article class="card" role="listitem" data-id="chroma" data-price="48000" data-specs="Zoom10x,Thermal,SocialFeed">
+          <div class="media holo-scan">
+            <img src="chroma-eyes.png" alt="Chroma’ Eyes optics suite" class="glitch-pulse" loading="lazy" width="900" height="600" decoding="async" />
+          </div>
+          <div class="content">
+            <div class="title">“Chroma’ Eyes” Optics Suite</div>
+            <div class="price">48,000 Crypto-Credits</div>
+            <p class="desc">10× zoom and thermal, with a built-in social feed. Never miss a moment.</p>
+            <ul class="specs">
+              <li>Screen-tear in peripheral vision</li>
+              <li>Cannot see beige</li>
+              <li>Dreams watermarked with our logo</li>
+            </ul>
+            <div class="compare-picker">
+              <label><input type="checkbox" class="cmp"> Compare</label>
+              <button class="btn" data-add>Add to Cart</button>
+              <button class="btn" data-print>Print Specs</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card" role="listitem" data-id="titan" data-price="92500" data-specs="Strength500,DiamondKnuckles,Espresso">
+          <div class="media holo-scan">
+            <img src="titan-armature.png" alt="Titan Armature cybernetic arm" class="glitch-pulse" loading="lazy" width="900" height="600" decoding="async" />
+          </div>
+          <div class="content">
+            <div class="title">“Titan” Armature</div>
+            <div class="price">92,500 Crypto-Credits</div>
+            <p class="desc">500% stronger, diamond knuckles, and a built-in espresso machine.</p>
+            <ul class="specs">
+              <li>Crushes all handshakes</li>
+              <li>Random techno music</li>
+              <li>Nervous system conflict every Tuesday</li>
+            </ul>
+            <div class="compare-picker">
+              <label><input type="checkbox" class="cmp"> Compare</label>
+              <button class="btn" data-add>Add to Cart</button>
+              <button class="btn" data-print>Print Specs</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card" role="listitem" data-id="recall" data-price="68300" data-specs="Eidetic,SkillDL,Ads">
+          <div class="media holo-scan">
+            <img src="recall-implant.png" alt="Recall Neural Implant" class="glitch-pulse" loading="lazy" width="900" height="600" decoding="async" />
+          </div>
+          <div class="content">
+            <div class="title">“Recall” Neural Implant</div>
+            <div class="price">68,300 Crypto-Credits</div>
+            <p class="desc">Perfect, eidetic memory. Download new skills in seconds.</p>
+            <ul class="specs">
+              <li>Remember every embarrassment in 4K</li>
+              <li>Pop-up ads in your thoughts</li>
+              <li>5% chance of pirate-slang instead of French</li>
+            </ul>
+            <div class="compare-picker">
+              <label><input type="checkbox" class="cmp"> Compare</label>
+              <button class="btn" data-add>Add to Cart</button>
+              <button class="btn" data-print>Print Specs</button>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div style="margin-top:16px"><a class="btn holo" href="products.html"><span class="holo-glitch-text" data-text="See all products →">See all products →</span></a></div>
+    </section>
+
+    <!-- WHY US -->
+    <section class="section" id="why" aria-label="Why upgrade with NEON|PARTS">
+      <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:0 0 14px 0;">Why upgrade with NEON|PARTS?</h2>
+      <div class="features">
+        <div class="feature"><h3>Zero-Lag Aesthetics™</h3><p>Our implants look good even when your life doesn’t. Polished edges, tasteful glows, legally distinct from anything litigious.</p></div>
+        <div class="feature"><h3>Ethically Ambiguous</h3><p>We source components from consenting robots and questionable warehouses. The vibe is immaculate; the paperwork is… evolving.</p></div>
+        <div class="feature"><h3>Upgradeable Firmware</h3><p>Patch notes include fewer intrusive thoughts, more coffee shortcuts, and optional pirate-slang packs.</p></div>
+        <div class="feature"><h3>Neighborhood Support</h3><p>24/7 chat. Response times measured in micro-sighs.</p></div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <section class="section" aria-label="Mentions">
+      <div class="marquee-wrap">
+        <div class="marquee" aria-hidden="true">
+          <span>As seen in: Night City Tech • NeoTokyo Ledger • The UnderNet Review • Corporate Espressophile • Blade Runners (fan zine)</span>
+          <span>As seen in: Night City Tech • NeoTokyo Ledger • The UnderNet Review • Corporate Espressophile • Blade Runners (fan zine)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON -->
+    <section class="section" id="compare" aria-label="Plans comparison">
+      <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:0 0 14px 0;">Pick your poison</h2>
+      <div style="overflow:auto">
+        <table class="table" role="table">
+          <thead><tr><th>Plan</th><th>Power</th><th>Side Effects</th><th>Warranty</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>Basic</td><td>200%</td><td>Occasional sparks</td><td>30 minutes</td><td><span class="pill">Entry</span></td></tr>
+            <tr><td>Pro</td><td>500%</td><td>Techno at random</td><td>90 minutes</td><td><span class="pill">Popular</span></td></tr>
+            <tr><td>“Illegal”</td><td>???</td><td>Unclear &amp; fun</td><td>What warranty?</td><td><span class="pill">Ask in alley</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS (grid) -->
+    <section class="section" id="testimonials" aria-label="Customer testimonials">
+      <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:0 0 14px 0;">Voices from the Neon</h2>
+      <div class="voice-grid">
+        <article class="voice-card">
+          <p>“The Titan Armature turned my handshake into an HR incident. 10/10, would settle again.”</p>
+          <p class="muted">— Mira, CFO (Caffeinated Force Officer)</p>
+          <p class="muted tiny">Easter egg: ask about model <code>TYR-800</code> behind the loading docks.</p>
+        </article>
+        <article class="voice-card">
+          <p>“Chroma’ Eyes let me read signs through the rain. Didn’t know neon had that many shades.”</p>
+          <p class="muted">— R. Deckard, “retired” specialist</p>
+          <p class="muted tiny">Easter egg: optional “tears-in-rain” anti-fog coating available.</p>
+        </article>
+        <article class="voice-card">
+          <p>“Recall taught me knife skills overnight. The cat still doesn’t trust me, but the soufflé does.”</p>
+          <p class="muted">— E. Ripley, warrant officer (former)</p>
+          <p class="muted tiny">Easter egg: motion-tracker notification tone in Settings ▸ Sounds.</p>
+        </article>
+      </div>
+      <p class="muted tiny" style="margin-top:10px">“I’m afraid I can’t refund that, user.” — H.A.L., Sentient Logistics</p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq" aria-label="Frequently asked questions">
+      <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin:0 0 14px 0;">Frequently Asked Ambiguities</h2>
+      <details id="faq-pain"><summary>Is installation painful?</summary><p>Only if you have nerves. Our tech negotiates with them. Tuesdays are the worst.</p></details>
+      <details id="faq-dreams"><summary>Will my dreams be safe?</summary><p>Yes. Encrypted end-to-REM with triple-salting. Some ad placements may occur.</p></details>
+      <details id="faq-returns"><summary>Do you offer returns?</summary><p>Within 90 minutes, provided causality remains intact and your implant doesn’t claim squatter’s rights.</p></details>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="section" aria-label="Newsletter sign-up">
+      <div class="nl">
+        <div>
+          <h2 style="font-family:Orbitron, sans-serif; color:var(--accent); text-shadow:var(--glow); margin-top:0;">Join the Night Shift</h2>
+          <p class="sub">Get firmware patch notes, neon coupons, and ethically ambiguous opportunities.</p>
+        </div>
+        <form onsubmit="event.preventDefault(); document.getElementById('nl-feedback').textContent='Subscribed (in a dystopian sense).';" aria-describedby="nl-feedback">
+          <input type="email" placeholder="your@email.com" required>
+          <button type="submit">Subscribe</button>
+          <div id="nl-feedback" role="status" aria-live="polite" class="tiny" style="margin-top:6px;"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- SHIPPING / RETURNS -->
+    <section class="section" aria-label="Shipping, returns and support">
+      <div class="sr">
+        <div class="panel"><h3 style="margin:0 0 6px 0; color:var(--accent); text-shadow:var(--glow); font-family:Orbitron;">Shipping</h3><p>Global delivery in 3–5 night cycles. Drone-friendly rooftops preferred. Alley pickups available.</p></div>
+        <div class="panel"><h3 style="margin:0 0 6px 0; color:var(--accent); text-shadow:var(--glow); font-family:Orbitron;">Returns</h3><p>90-minute window. Must arrive with original memories and minimal scorch marks.</p></div>
+        <div class="panel"><h3 style="margin:0 0 6px 0; color:var(--accent); text-shadow:var(--glow); font-family:Orbitron;">Support</h3><p>24/7 chat. Response times fluctuate with caffeine supply and local rain density.</p></div>
+      </div>
+    </section>
+
+    <!-- BIG CTA -->
+    <section class="section" aria-label="Final call to action">
+      <div class="cta-wide">
+        <div>
+          <h2 style="margin:0 0 6px 0; font-family:Orbitron; color:var(--accent); text-shadow:var(--glow);">Ready to upgrade?</h2>
+          <p class="sub">You bring the ambition. We bring the questionable warranties.</p>
+        </div>
+        <div>
+          <a class="btn primary holo" href="products.html"><span class="holo-glitch-text" data-text="Enter the Catalog →">Enter the Catalog →</span></a>
+        </div>
+      </div>
+      <!-- Achievements shelf -->
+      <div id="badges" aria-label="Achievements"></div>
+    </section>
+  </main>
+
+  <!-- Compare tray -->
+  <div id="compareTray" aria-live="polite">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+      <strong>Compare</strong>
+      <button class="btn" id="clearCompare" type="button">Clear</button>
+    </div>
+    <div style="overflow:auto;">
+      <table id="compareTable">
+        <thead><tr><th>Item</th><th>Price</th><th>Specs</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Cart drawer -->
+  <aside id="cart" aria-label="Cart drawer" aria-live="polite">
+    <header style="display:flex; align-items:center; justify-content:space-between;">
+      <strong style="font-family:Orbitron; color:var(--accent);">Your Cart</strong>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" id="checkoutBtn" type="button">Checkout</button>
+        <button class="btn" id="closeCart" type="button">✕</button>
+      </div>
+    </header>
+    <div class="items"></div>
+    <footer>
+      <div><strong>Total:</strong> <span id="cartTotal">0</span> CC</div>
+      <button class="btn" id="emptyCart" type="button">Empty Cart</button>
+    </footer>
+  </aside>
+
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Command palette -->
+  <div id="cmd" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
+    <div class="box">
+      <h3 id="cmdTitle" style="margin:0 0 8px 0; font-family:Orbitron; color:var(--accent);">Command</h3>
+      <input id="cmdInput" type="text" placeholder="Type a command… (try: catalog, terms, compare, storm, theme, rain, fog)" />
+      <ul id="cmdList"></ul>
+    </div>
+  </div>
+
+  <!-- Configurator -->
+  <div id="config" role="dialog" aria-modal="true" aria-labelledby="cfgTitle">
+    <div class="box">
+      <h3 id="cfgTitle" style="margin:0 0 10px 0; font-family:Orbitron; color:var(--accent);">Build Your Implant</h3>
+      <div class="cfg-grid">
+        <div class="cfg-row">
+          <h4>Module</h4>
+          <label><input type="radio" name="mod" value="Optics" checked> Optics (+22000)</label><br>
+          <label><input type="radio" name="mod" value="Armature"> Armature (+40000)</label><br>
+          <label><input type="radio" name="mod" value="Neural"> Neural (+32000)</label>
+        </div>
+        <div class="cfg-row">
+          <h4>Add-ons</h4>
+          <label><input type="checkbox" class="addon" value="Thermal" data-price="6000"> Thermal (+6000)</label><br>
+          <label><input type="checkbox" class="addon" value="Diamond" data-price="12000"> Diamond Knuckles (+12000)</label><br>
+          <label><input type="checkbox" class="addon" value="AntiFog" data-price="3000"> Anti-Fog (+3000)</label><br>
+          <label><input type="checkbox" class="addon" value="SkillDL" data-price="9000"> Skill Download (+9000)</label>
+        </div>
+        <div class="cfg-row">
+          <h4>Finish</h4>
+          <select id="finish" style="width:100%; background:#0a0f18; border:1px solid var(--border); color:var(--text); border-radius:10px; padding:8px;">
+            <option value="Matte">Matte</option>
+            <option value="Gloss">Gloss</option>
+            <option value="Holo">Holographic</option>
+          </select>
+        </div>
+        <div class="cfg-row">
+          <h4>Summary</h4>
+          <div id="cfgSummary" style="font-size:14px; color:var(--muted);">Price: 22,000 CC</div>
+        </div>
+      </div>
+      <div class="cfg-actions">
+        <button class="btn" id="cfgCancel" type="button">Cancel</button>
+        <button class="btn primary" id="cfgAdd" type="button">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings panel -->
+  <div id="settings">
+    <div class="panel" id="settingsPanel" role="dialog" aria-modal="false" aria-label="Settings">
+      <label>Theme</label>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" id="themeOrange" type="button">Orange</button>
+        <button class="btn" id="themePink" type="button">Pink</button>
+      </div>
+      <label>Hologram Intensity</label>
+      <input type="range" id="intensity" min="0" max="2" step="0.1" value="1" />
+      <label><input type="checkbox" id="toggleRain"> Rain</label>
+      <label><input type="checkbox" id="toggleFog"> Fog</label>
+      <div style="margin-top:8px; display:flex; gap:8px;">
+        <button class="btn" id="glitchStorm" type="button">Glitch Storm</button>
+        <button class="btn" id="resetSettings" type="button">Reset</button>
+      </div>
+    </div>
+    <button class="cog" id="cog" title="Settings">⚙️</button>
+  </div>
+
+  <!-- Checkout parody -->
+  <div id="checkout" role="dialog" aria-modal="true" aria-labelledby="coTitle">
+    <div class="box">
+      <h3 id="coTitle" style="margin:0 0 10px 0; font-family:Orbitron; color:var(--accent);">Review & Checkout</h3>
+      <form id="coForm">
+        <input name="name" placeholder="Legal Name (or alias)" required>
+        <input name="sector" placeholder="Sector / Block" required>
+        <input name="rooftop" placeholder="Rooftop Pad (for drones)" required>
+        <button class="btn primary" type="submit">Pay (Totally Secure)</button>
+        <button class="btn" type="button" id="coCancel">Cancel</button>
+      </form>
+      <p id="coMsg" class="tiny" style="margin-top:8px;"></p>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Utilities & storage ---------- */
+    const $ = (s, p=document)=>p.querySelector(s);
+    const $$ = (s, p=document)=>Array.from(p.querySelectorAll(s));
+    const store = {
+      get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d } },
+      set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+    };
+    const fmt = n => Number(n).toLocaleString('en-IN');
+
+    /* ---------- Scroll progress ---------- */
+    const progress = $('#progress');
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+      progress.style.width = pct + '%';
+    };
+    document.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+
+    /* ---------- Toast ---------- */
+    const toast = (msg) => {
+      const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 1600);
+    };
+
+    /* ---------- Cart ---------- */
+    const cartEl = $('#cart');
+    const itemsEl = $('#cart .items');
+    const totalEl = $('#cartTotal');
+    const openCart = () => { cartEl.classList.add('show'); };
+    const closeCart = () => { cartEl.classList.remove('show'); };
+    $('#openCart').addEventListener('click', openCart);
+    $('#closeCart').addEventListener('click', closeCart);
+    $('#emptyCart').addEventListener('click', ()=>{ store.set('cart', []); renderCart(); toast('Cart emptied'); unlock('Clean Slate'); });
+    $('#checkoutBtn').addEventListener('click', ()=> { $('#checkout').style.display = 'grid'; });
+
+    const renderCart = () => {
+      const cart = store.get('cart', []);
+      itemsEl.innerHTML = cart.map((it,i)=>`
+        <div class="item">
+          <div style="width:44px;height:44px;border:1px solid var(--border);border-radius:8px;background:#0b1220;display:flex;align-items:center;justify-content:center;">${it.id.slice(0,2).toUpperCase()}</div>
+          <div style="flex:1;">
+            <div style="font-weight:800">${it.title}</div>
+            <div class="tiny" style="color:var(--muted)">${fmt(it.price)} CC ${it.note?(' • '+it.note):''}</div>
+          </div>
+          <button class="btn" data-rm="${i}" title="Remove">✕</button>
+        </div>
+      `).join('');
+      itemsEl.querySelectorAll('[data-rm]').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+          const idx = +btn.dataset.rm; const c = store.get('cart', []);
+          c.splice(idx,1); store.set('cart', c); renderCart();
+        });
+      });
+      const total = cart.reduce((s,x)=>s+Number(x.price||0),0);
+      totalEl.textContent = fmt(total);
+    };
+    renderCart();
+
+    /* Add to cart buttons */
+    $$('[data-add]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const card = e.target.closest('.card');
+        const id = card.dataset.id;
+        const title = card.querySelector('.title').textContent.trim();
+        const price = Number(card.dataset.price||0);
+        const cart = store.get('cart', []);
+        cart.push({id, title, price});
+        store.set('cart', cart); renderCart(); openCart();
+        toast(`+1 ${title}`);
+        unlock('First Purchase');
+      });
+    });
+
+    /* Print spec sheet */
+    $$('[data-print]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const card = e.target.closest('.card');
+        card.classList.add('print-target');
+        setTimeout(()=>{ window.print(); card.classList.remove('print-target'); }, 20);
+      });
+    });
+
+    /* ---------- Compare tray ---------- */
+    const compareTray = $('#compareTray');
+    const cmpBody = $('#compareTable tbody');
+    const selections = new Set();
+    const refreshCompare = () => {
+      if (selections.size === 0) { compareTray.classList.remove('show'); cmpBody.innerHTML=''; return; }
+      compareTray.classList.add('show');
+      const rows = [];
+      selections.forEach(card=>{
+        rows.push(`<tr><td>${card.querySelector('.title').textContent}</td><td>${fmt(card.dataset.price)} CC</td><td>${card.dataset.specs.replaceAll(',', ', ')}</td></tr>`);
+      });
+      cmpBody.innerHTML = rows.join('');
+    };
+    $$('.cmp').forEach(chk=>{
+      chk.addEventListener('change', e=>{
+        const card = e.target.closest('.card');
+        if (e.target.checked) selections.add(card); else selections.delete(card);
+        refreshCompare();
+      });
+    });
+    $('#clearCompare').addEventListener('click', ()=>{ selections.clear(); $$('.cmp').forEach(c=>c.checked=false); refreshCompare(); });
+
+    /* ---------- Configurator ---------- */
+    const cfg = $('#config'); const sum = $('#cfgSummary');
+    const prices = { Optics:22000, Armature:40000, Neural:32000 };
+    const calcCfg = () => {
+      const mod = $('input[name="mod"]:checked', cfg).value;
+      let total = prices[mod] || 0;
+      const addOns = $$('.addon:checked', cfg).map(a=>({name:a.value, p:Number(a.dataset.price)}));
+      addOns.forEach(a=> total += a.p);
+      const finish = $('#finish').value;
+      sum.textContent = `Price: ${fmt(total)} CC • ${mod} • ${finish}${addOns.length?(' • +'+addOns.map(a=>a.name).join('+')):''}`;
+      return {total, mod, addOns, finish};
+    };
+    $$('input[name="mod"]', cfg).forEach(r=>r.addEventListener('change', calcCfg));
+    $$('.addon', cfg).forEach(c=>c.addEventListener('change', calcCfg));
+    $('#finish').addEventListener('change', calcCfg);
+    $('#openConfigurator').addEventListener('click', ()=>{ cfg.style.display='grid'; calcCfg(); });
+    $('#cfgCancel').addEventListener('click', ()=> cfg.style.display='none');
+    $('#cfgAdd').addEventListener('click', ()=>{
+      const {total, mod, addOns, finish} = calcCfg();
+      const cart = store.get('cart', []);
+      cart.push({id:'custom', title:`Custom ${mod}`, price: total, note: `${finish}${addOns.length?(' +'+addOns.map(a=>a.name).join('+')):''}`});
+      store.set('cart', cart); renderCart(); cfg.style.display='none'; openCart();
+      toast('Custom build added'); unlock('Configurator');
+    });
+
+    /* ---------- Settings (theme/intensity/rain/fog/storm) ---------- */
+    const settingsPanel = $('#settingsPanel'); const cog = $('#cog');
+    const applySettings = () => {
+      const s = store.get('ui', {theme:'orange', intensity:1, rain:false, fog:false});
+      document.documentElement.setAttribute('data-theme', s.theme);
+      document.documentElement.style.setProperty('--glitch-factor', s.intensity);
+      $('#toggleRain').checked = !!s.rain; $('#toggleFog').checked = !!s.fog;
+      $('#intensity').value = s.intensity;
+      $('#rain').style.display = s.rain ? 'block' : 'none';
+      $('#fog').style.display = s.fog ? 'block' : 'none';
+    };
+    cog.addEventListener('click', ()=> settingsPanel.style.display = (settingsPanel.style.display==='block'?'none':'block'));
+    $('#themeOrange').addEventListener('click', ()=>{ const s=store.get('ui',{}); s.theme='orange'; store.set('ui', s); applySettings(); toast('Theme: Orange'); unlock('Switcher'); });
+    $('#themePink').addEventListener('click', ()=>{ const s=store.get('ui',{}); s.theme='pink'; store.set('ui', s); applySettings(); toast('Theme: Pink'); unlock('Switcher'); });
+    $('#intensity').addEventListener('input', e=>{ const s=store.get('ui',{}); s.intensity = Number(e.target.value); store.set('ui', s); applySettings(); });
+    $('#toggleRain').addEventListener('change', e=>{ const s=store.get('ui',{}); s.rain = e.target.checked; store.set('ui', s); applySettings(); });
+    $('#toggleFog').addEventListener('change', e=>{ const s=store.get('ui',{}); s.fog  = e.target.checked; store.set('ui', s); applySettings(); });
+    $('#resetSettings').addEventListener('click', ()=>{ store.set('ui', {theme:'orange', intensity:1, rain:false, fog:false}); applySettings(); toast('Settings reset'); });
+
+    const glitchStorm = () => {
+      const prev = Number(getComputedStyle(document.documentElement).getPropertyValue('--glitch-factor')) || 1;
+      document.documentElement.style.setProperty('--glitch-factor', Math.max(1.6, prev));
+      toast('⚡ Glitch Storm!');
+      unlock('Storm Chaser');
+      setTimeout(()=> document.documentElement.style.setProperty('--glitch-factor', store.get('ui', {intensity:1}).intensity || 1), 10000);
+    };
+    $('#glitchStorm').addEventListener('click', glitchStorm);
+
+    /* ---------- Command palette ---------- */
+    const cmd = $('#cmd'), cmdInput = $('#cmdInput'), cmdList = $('#cmdList');
+    const commands = [
+      {k:'catalog', d:'Open product catalog', run:()=>location.href='products.html'},
+      {k:'terms', d:'Read the fine print', run:()=>location.href='terms.html'},
+      {k:'compare', d:'Open compare tray', run:()=>compareTray.classList.add('show')},
+      {k:'cart', d:'Open cart drawer', run:()=>openCart()},
+      {k:'theme orange', d:'Switch theme to Orange', run:()=>{$('#themeOrange').click()}},
+      {k:'theme pink', d:'Switch theme to Pink', run:()=>{$('#themePink').click()}},
+      {k:'rain', d:'Toggle rain overlay', run:()=>{$('#toggleRain').click()}},
+      {k:'fog', d:'Toggle fog overlay', run:()=>{$('#toggleFog').click()}},
+      {k:'storm', d:'Trigger Glitch Storm (10s)', run:()=>glitchStorm()},
+      /* Hidden nods */
+      {k:'tears-in-rain', d:'Enable anti-fog (Chroma easter egg)', run:()=>{$('#toggleFog').checked=true; $('#toggleFog').dispatchEvent(new Event('change')); unlock('Tears in Rain'); }},
+      {k:'tyr-800', d:'Armature diagnostics (wink)', run:()=>{toast('Diagnostics: 0% human. 100% espresso.'); unlock('Model TYR-800'); }},
+      {k:'offworld', d:'Open careers (classified)', run:()=>{toast('A new life awaits you in the Off-world Colonies.'); unlock('Replicant?'); }}
+    ];
+    const openCmd = ()=>{ cmd.style.display='grid'; cmdInput.value=''; fillCmd(''); cmdInput.focus(); unlock('Palette'); };
+    const closeCmd = ()=>{ cmd.style.display='none'; };
+    const fillCmd = (q)=> {
+      const list = commands.filter(c=>c.k.includes(q.toLowerCase()));
+      cmdList.innerHTML = list.map(c=>`<li tabindex="0"><span>${c.k}</span><small style="color:var(--muted)">${c.d}</small></li>`).join('');
+      $$('li', cmdList).forEach((li,i)=> li.addEventListener('click', ()=>{ list[i].run(); closeCmd(); }));
+      $$('li', cmdList).forEach((li,i)=> li.addEventListener('keydown', (e)=>{ if(e.key==='Enter') { list[i].run(); closeCmd(); }}));
+    };
+    cmdInput.addEventListener('input', e=> fillCmd(e.target.value));
+    cmd.addEventListener('click', e=>{ if(e.target===cmd) closeCmd(); });
+    document.addEventListener('keydown', (e)=>{
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); openCmd(); }
+      if (e.key==='Escape') { closeCmd(); cfg.style.display='none'; $('#checkout').style.display='none'; }
+    });
+
+    /* ---------- Keyboard shortcuts ---------- */
+    document.addEventListener('keydown', (e)=>{
+      const k = e.key.toLowerCase();
+      if (['input','textarea'].includes(document.activeElement.tagName.toLowerCase())) return;
+      if (k==='1') $$('.card')[0]?.scrollIntoView({behavior:'smooth', block:'center'});
+      if (k==='2') $$('.card')[1]?.scrollIntoView({behavior:'smooth', block:'center'});
+      if (k==='3') $$('.card')[2]?.scrollIntoView({behavior:'smooth', block:'center'});
+      if (k==='a') { $$('.card')[0]?.querySelector('[data-add]')?.click(); }
+      if (k==='c') openCart();
+      if (k==='?') openCmd();
+      if (k==='g') glitchStorm();
+    });
+
+    /* ---------- Checkout parody ---------- */
+    const co = $('#checkout'), coForm = $('#coForm'), coMsg = $('#coMsg');
+    $('#coCancel').addEventListener('click', ()=> co.style.display='none');
+    coForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const total = store.get('cart', []).reduce((s,x)=>s+Number(x.price||0),0);
+      coMsg.textContent = 'Authorizing payment…';
+      setTimeout(()=>{
+        coMsg.textContent = `DECLINED: Corporate Compliance requires a notarized empathy test. Total attempted: ${fmt(total)} CC.`;
+        unlock('Denied at Checkout');
+      }, 900);
+    });
+
+    /* ---------- Achievements ---------- */
+    const badgeBox = $('#badges');
+    const unlock = (name) => {
+      const ach = store.get('ach', []);
+      if (!ach.includes(name)) { ach.push(name); store.set('ach', ach); renderBadges(); }
+    };
+    const renderBadges = () => {
+      const ach = store.get('ach', []);
+      const pool = ['First Purchase','Configurator','Palette','Storm Chaser','Model TYR-800','Tears in Rain','Replicant?','Denied at Checkout','Switcher','Clean Slate'];
+      badgeBox.innerHTML = pool.map(n=>`<span class="badge-chip ${ach.includes(n)?'unlocked':''}" title="${n}">${n}</span>`).join('');
+    };
+
+    /* ---------- Random micro-glitches on images ---------- */
+    (function randomGlitches(){
+      const items = $$('.glitch-pulse');
+      if (!items.length) return;
+      const jitter = el => { el.classList.add('glitch-burst'); setTimeout(()=> el.classList.remove('glitch-burst'), 450); };
+      const isInView = el => { const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
+      const tick = () => {
+        const el = items[Math.floor(Math.random() * items.length)];
+        if (el && isInView(el)) jitter(el);
+        setTimeout(tick, 900 + Math.random()*2200);
+      };
+      tick();
+    })();
+
+    /* ---------- FAQ hash open ---------- */
+    (function openFaqFromHash(){
+      const openIfDetails = (hash) => {
+        if (!hash) return;
+        const el = document.querySelector(hash);
+        if (el && el.tagName.toLowerCase() === 'details') {
+          el.open = true; el.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      };
+      openIfDetails(location.hash);
+      addEventListener('hashchange', ()=> openIfDetails(location.hash));
+    })();
+
+    /* ---------- Init ---------- */
+    applySettings?.(); renderCart(); renderBadges();
+
+  </script>
+</body>
+</html>
